@@ -7,7 +7,7 @@ variable "tenant_id" {
 variable "subscription_id" {
   description = "The Azure Subscription ID"
   type        = string
-  default     = "029b3537-0f24-400b-b624-6058a145efe1"  # Valeur vide par défaut, à remplir si nécessaire
+  default     = ""  # Valeur vide par défaut, à remplir si nécessaire
 }
 
 variable "keyvault_name" {
@@ -19,7 +19,7 @@ variable "keyvault_name" {
 variable "resource_group_name" {
   description = "The name of the Azure resource group"
   type        = string
-  default = "RG_PBONNEAU"
+  default = "my-unique-resource-group-name"
 }
 
 variable "location" {
@@ -37,7 +37,7 @@ variable "sku_name" {
 variable "secret_name" {
   description = "The name of the secret to store in the Key Vault"
   type        = string
-  default = "defaultsecretname"
+  default = ""
 }
 
 variable "secret_value" {
@@ -51,38 +51,3 @@ variable "secret_id" {
   type        = string
   default = "defaultsecretid"
 }
-
-
-
-
-# variable "resource_group_name" {
-#   default = "RG_PBONNEAU"
-#   type        = string
-# }
-
-# variable "sku_name" {
-#   default = "standard"
-#   type        = string
-# }
-
-# variable "tenant_id" {
-#   default = "pbo-tenant"
-#   type        = string
-# }
-
-# variable "key_vault_id" {
-#   description = "/subscriptions/029b3537-0f24-400b-b624-6058a145efe1/resourceGroups/RG_PBONNEAU/providers/Microsoft.KeyVault/vaults/"
-#   type        = string
-
-# # condition regex pour valider mon keyvault id
-#   validation {
-#     condition     = can(regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.KeyVault/vaults/.*$", var.key_vault_id))
-#     error_message = "The keyvault_id must be a valid Azure Key Vault ID."
-#   }
-# }
-
-# variable "subscription_id" {
-# default =  "029b3537-0f24-400b-b624-6058a145efe1"
-# type = string
-# }
-

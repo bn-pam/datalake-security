@@ -1,3 +1,4 @@
 script-cli.sh
 script-copy.sh
 .env
+terraform.tfvars
