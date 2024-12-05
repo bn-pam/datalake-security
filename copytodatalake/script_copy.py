@@ -3,7 +3,8 @@ from azure.storage.filedatalake import DataLakeServiceClient
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from dotenv import load_dotenv
-import uuid, requests
+import uuid, requests, re
+from urllib.parse import urljoin
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -17,8 +18,9 @@ storage_account_name = os.getenv('STORAGE_ACCOUNT_NAME')
 sp1_id = os.getenv('SP_ID_PRINCIPAL')
 sp1_secret = os.getenv('SECRET_NAME')
 
-# Récupérer les informations du fichier à uploader
+# Récupérer les informations des url à uploader
 upload_file_path = os.getenv('FILE_PATH')
+page_url = os.getenv('PAGE_URL')
 file_system_name = os.getenv('CONTAINER_NAME')
 file_name = f"{file_system_name}_{uuid.uuid4().hex}.csv"  # Nom dynamique pour éviter les collisions
 
@@ -47,8 +49,7 @@ def get_datalake_client():
 
 
 # fonction de récupération de fichier depuis request
-def get_response_url() :
-    url = upload_file_path
+def get_response_url(url=page_url) :
     # Télécharger le fichier depuis l'URL
     response = requests.get(url)
     if response.status_code == 200:
@@ -59,7 +60,7 @@ def get_response_url() :
         exit(1)
 
 # fonction permettant d'uploader le fichier sur le datalake
-def upload_file_to_datalake(file_content, file_system_name, file_name):
+def upload_file_to_datalake(datalake_client, file_content, file_system_name, file_name):
 
     file_system_client = datalake_client.get_file_system_client(file_system_name)
     
@@ -71,7 +72,33 @@ def upload_file_to_datalake(file_content, file_system_name, file_name):
 
     print(f"File '{file_name}' uploaded successfully to Data Lake.")
 
-# appeler mes fonctions pour rendre le fonctionnement plus digeste
-file_content = get_response_url()
-datalake_client = get_datalake_client()
-upload_file_to_datalake(file_content, file_system_name, file_name)
+
+# # appeler mes fonctions pour rendre le fonctionnement plus digeste
+# file_content = get_response_url()
+# datalake_client = get_datalake_client()
+# upload_file_to_datalake(file_content, file_system_name, file_name)
+
+
+# Fonction pour récupérer toutes les URLs des fichiers .parquet d'une page web
+def get_urls_list_from_page(page_url=page_url):
+    response = requests.get(page_url)
+    if response.status_code == 200:
+        html_content = response.text
+        # Extraire les liens qui se terminent par .parquet
+        list_links = re.findall(r'href=["\'](/datasets/[^"\']+\.parquet\?download=true)["\']', html_content)
+        # Convertir les liens relatifs en absolus (si nécessaire)
+        absolute_urls = [urljoin(page_url, link) for link in list_links]
+        return absolute_urls
+    else:
+        print(f"Erreur lors de la récupération de la page {page_url}. Status: {response.status_code}")
+        return []
+
+# fonction pour uploader plusieurs fichiers sur le datalake
+def upload_multiple_files(datalake_client, file_urls, file_system_name):
+    for url in file_urls[:5]:
+        print(f"Téléchargement du fichier : {url}")
+        file_content = get_response_url(url)
+        if file_content:
+            # Générer un nom unique pour chaque fichier
+            file_name = f"{file_system_name}_{uuid.uuid4().hex}.parquet"
+            upload_file_to_datalake(datalake_client, file_content, file_system_name, file_name)
