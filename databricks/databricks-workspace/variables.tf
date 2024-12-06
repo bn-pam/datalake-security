@@ -76,8 +76,14 @@ variable "sp_db_secret"{
 }
 
 variable "sp_client_id"{
-  description = "sp secret for Azure DB"
+  description = "sp client id for Azure DB"
   type = string
   default = "default-sp_client_id"
+}
+
+variable "storage_account"{
+  description = "storage account of the datalake azure"
+  type = string
+  default = "default-azure_storage_account"
 }
 
