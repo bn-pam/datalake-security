@@ -47,11 +47,11 @@ resource "azurerm_databricks_workspace" "databricks_workspace" {
   }
 }
 
-# resource "azurerm_role_assignment" "role_assignment" {
-#   scope                = azurerm_storage_account.id
-#   role_definition_name = var.role_definition_name
-#   principal_id         = azurerm_databricks_workspace.identity[0].principal_id
-# }
+resource "azurerm_role_assignment" "role_assignment" {
+  scope                = azurerm_storage_account.datalake.id
+  role_definition_name = var.role_definition_name
+  principal_id         = azurerm_databricks_workspace.identity[0].principal_id
+}
 
 resource "databricks_cluster" "cluster-databricks" {
   cluster_name            = var.cluster_name
@@ -63,11 +63,3 @@ resource "databricks_cluster" "cluster-databricks" {
   autotermination_minutes = 60
   num_workers             = 1
 }
-
-output "cluster_url" {
-  value = "https://${azurerm_databricks_workspace.databricks_workspace.name}.azuredatabricks.net#cluster/${databricks_cluster.cluster-databricks.id}"
-}
-
-output "workspace_url" {
-  value = azurerm_databricks_workspace.databricks_workspace.workspace_url
-  }

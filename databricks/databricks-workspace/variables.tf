@@ -24,7 +24,7 @@ variable "location" {
 variable "workspace_name" {
   description = "Nom du workspace Databricks."
   type        = string
-  default = "workspace-db-exemple"
+  default = "default_workspace-db"
 }
 
 variable "sku" {
@@ -36,54 +36,48 @@ variable "sku" {
 variable "managed_resource_group_name" {
   description = "Nom du groupe de ressources géré automatiquement par Azure Databricks."
   type        = string
-  default = "managed-rg-db-exemple"
+  default = "default_managed-rg-db-exemple"
 }
 
 variable "env_name" {
   description = "Nom de l'environnement pour databricks"
   type = string
-  default = "env-db-exemple"
-}
-
-variable "cluster_id" {
-  description = "ID du cluster de databricks"
-  type = string
-  default = "cluster-db-exemple-id"
+  default = "default-env_db_example"
 }
 
 variable "cluster_name" {
   description = "ID du cluster de databricks"
   type = string
-  default = "cluster-db-exemple-name"
+  default = "cdefault-cluster-db-name"
 }
 
 variable "azurerm_role_assignment"{
   description = "Role Assignment for Azure DB"
   type = string
-  default = "cluster-db-exemple-name"
+  default = "default-role_assignement"
 }
 
 variable "role_definition_name"{
   description = "Role Assignment type for Azure DB"
   type = string
-  default = "role_definition_name"
+  default = "default-role_definition_name"
 }
 
 variable "azure_tenant_id"{
   description = "tenant id for Azure DB"
   type = string
-  default = "tenant-id"
+  default = "default-tenant_id"
 }
 
 variable "sp_db_secret"{
   description = "sp secret for Azure DB"
   type = string
-  default = "tenant-id"
+  default = "default-sp_db_secret"
 }
 
 variable "sp_client_id"{
   description = "sp secret for Azure DB"
   type = string
-  default = "tenant-id"
+  default = "default-sp_client_id"
 }
 
